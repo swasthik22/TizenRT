@@ -56,10 +56,21 @@
 
 #include <tinyara/config.h>
 #include <stdio.h>
+#include <pthread.h>
 
 /****************************************************************************
  * hello_main
  ****************************************************************************/
+
+void *myThreadFun(void *vargp)
+{
+    sleep(1);
+    for (int i=0;i<10;i++){
+    	printf("Printing from thread %d \n",i);
+    }
+    return NULL;
+}
+
 
 #ifdef CONFIG_BUILD_KERNEL
 int main(int argc, FAR char *argv[])
@@ -68,5 +79,12 @@ int hello_main(int argc, char *argv[])
 #endif
 {
 	printf("Hello, World!!\n");
+	pthread_t thread_id;
+    	printf("Before Thread\n");
+    	pthread_create(&thread_id, NULL, myThreadFun, NULL);
+
+	int *a = (int *)malloc(sizeof(int));
+	for (int i = 0; i < 20; i++) a[i] = i;
+	PANIC();
 	return 0;
 }

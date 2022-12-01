@@ -92,6 +92,9 @@ void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size
 void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size_t size, int heap_type)
 #endif
 {
+	extern bool abort_mode;
+        abort_mode = true;
+
 	irqstate_t flags = irqsave();
 
 	mfdbg("Allocation failed from %s heap.\n", (heap_type == KERNEL_HEAP) ? KERNEL_STR : USER_STR);
@@ -113,8 +116,6 @@ void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size
 	WRITE_REBOOT_REASON(REBOOT_SYSTEM_MEMORYALLOCFAIL);
 #endif
 
-	extern bool abort_mode;
-	abort_mode = true;
 #endif /* CONFIG_MM_ASSERT_ON_FAIL */
 
 #ifdef CONFIG_DEBUG_MM_HEAPINFO
