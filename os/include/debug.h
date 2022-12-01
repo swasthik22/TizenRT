@@ -499,7 +499,7 @@ int get_errno(void);
 #define mllvdbg(...)
 #endif
 
-#if defined(CONFIG_MM_ASSERT_ON_FAIL) && defined(CONFIG_APP_BINARY_SEPARATION) && defined (__KERNEL__)
+#if defined(CONFIG_BUILD_FLAT) ||  defined (__KERNEL__)
 #define mfdbg(format, ...)	if (abort_mode || up_interrupt_context()) \
                                                              lldbg(format, ##__VA_ARGS__); \
                                                         else \
