@@ -92,8 +92,10 @@ void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size
 void mm_manage_alloc_fail(struct mm_heap_s *heap, int startidx, int endidx, size_t size, int heap_type)
 #endif
 {
-	extern bool abort_mode;
-        abort_mode = true;
+		extern bool abort_mode;
+#ifdef CONFIG_MM_ASSERT_ON_FAIL
+	abort_mode = true;
+#endif
 
 	irqstate_t flags = irqsave();
 

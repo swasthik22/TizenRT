@@ -64,8 +64,8 @@
 
 void *myThreadFun(void *vargp)
 {
-    sleep(1);
-    for (int i=0;i<10;i++){
+   // sleep(1);
+    for (int i=0;i<700;i++){
     	printf("Printing from thread %d \n",i);
     }
     return NULL;
@@ -82,9 +82,9 @@ int hello_main(int argc, char *argv[])
 	pthread_t thread_id;
     	printf("Before Thread\n");
     	pthread_create(&thread_id, NULL, myThreadFun, NULL);
-
-	int *a = (int *)malloc(sizeof(int));
-	for (int i = 0; i < 20; i++) a[i] = i;
-	PANIC();
+	sleep(100);
+	int *a = (int *)malloc(sizeof(int)*100000000);
+	//for (int i = 0; i < 20; i++) a[i] = i;
+	//PANIC();
 	return 0;
 }
