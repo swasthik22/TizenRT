@@ -364,3 +364,18 @@ int elf_findsection(FAR struct elf_loadinfo_s *loadinfo, FAR const char *sectnam
 
 	return -ENOENT;
 }
+
+/****************************************************************************
+ * Name: get_bin_addr_list
+ *
+ * Description:
+ *   Return the pointer to the bin info address list
+ *
+ * Returned Value:
+ *   Return the pointer to the bin info address list
+ ****************************************************************************/
+
+bin_addr_info_t *get_bin_addr_list()
+{
+	return g_bin_addr_list;
+}

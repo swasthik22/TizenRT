@@ -143,7 +143,7 @@ int prctl(int option, ...)
 			/* An invalid pid will be indicated by a NULL TCB returned from
 			 * sched_gettcb()
 			 */
-
+			
 			if (!tcb) {
 				sdbg("Pid does not correspond to a task: %d\n", pid);
 				err = ESRCH;
@@ -351,6 +351,21 @@ int prctl(int option, ...)
 		key = va_arg(ap, char *);
 		ret = preference_unregister_callback(key, type);
 		va_end(ap);
+		return ret;
+	}
+#endif
+#ifdef CONFIG_MEM_LEAK_CHECKER
+	case PR_MEM_LEAK_CHECKER:
+	{
+		int ret;
+		int checker_pid;
+		char *bin_name;
+		checker_pid = va_arg(ap, int);
+		bin_name = va_arg(ap, char *);
+
+		ret = run_mem_leak_checker(checker_pid, bin_name);
+		va_end(ap);
+
 		return ret;
 	}
 #endif

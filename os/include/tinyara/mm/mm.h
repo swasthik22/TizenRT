@@ -838,6 +838,16 @@ void *zalloc_at(int heap_index, size_t size);
 #define zalloc_at(heap_index, size)              zalloc(size)
 #endif
 
+#ifdef CONFIG_MEM_LEAK_CHECKER
+struct mem_leak_checker_info_s {
+	void *stack_top;
+	void *stack_bottom;
+	void *heap_start;
+	void *heap_end;
+	void *heap;
+};
+int run_mem_leak_checker(int checker_pid, char *bin_name);
+#endif
 /**
  * @brief Free the memory from specified user heap.
  * @details @b #include <tinyara/mm/mm.h>\n

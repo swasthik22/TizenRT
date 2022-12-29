@@ -437,6 +437,18 @@ void elf_delete_bin_section_addr(uint8_t bin_idx);
 #ifdef CONFIG_BINFMT_SECTION_UNIFIED_MEMORY
 void *elf_find_start_section_addr(struct binary_s *binp);
 #endif
+
+/****************************************************************************
+ * Name: get_bin_addr_list
+ *
+ * Description:
+ *   Return the pointer to the bin info address list
+ *
+ * Returned Value:
+ *   Return the pointer to the bin info address list
+ ****************************************************************************/
+bin_addr_info_t *get_bin_addr_list(void);
+
 #endif /* CONFIG_APP_BINARY_SEPARATION */
 
 #endif							/* __BINFMT_LIBELF_LIBELF_H */
