@@ -238,7 +238,10 @@ static void print_info(char *bin_name, int leak_cnt, int broken_cnt, uint32_t bi
 	volatile struct mm_allocnode_s *node;
 	uint32_t owner_addr;	
 
+#ifdef CONFIG_APP_BINARY_SEPARATION
 	elf_show_all_bin_section_addr();
+#endif
+
 
 	if (leak_cnt > 0 || broken_cnt > 0) {
 		lldbg("Type   |    Addr   |   Size   |  Owner  | PID \n");
