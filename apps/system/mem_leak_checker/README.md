@@ -28,7 +28,7 @@ Note: We recommand using a prime number. Default value of that configuration is 
 
 This can be run on TASH.
 ```bash
-TASH>> mem_leak_checker [target]
+TASH>> mem_leak [target]
        [target] is used only when APP_BINARY_SEPARATION is enabled.
        [target] is one of kernel, wifi or micom.
 

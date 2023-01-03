@@ -48,13 +48,13 @@ int mem_leak_checker_main(int argc, char **argv)
 
 usage:
 #ifdef CONFIG_APP_BINARY_SEPARATION
-	printf("\nUsage: mem_leak_checker [TARGET]\n");
+	printf("\nUsage: mem_leak [TARGET]\n");
 	printf("\nTargets:\n");
 	printf(" kernel          Check memory leak from kernel threads.\n");
 	printf(" wifi            Check memory leak from Wi-Fi Binary.\n");
 	printf(" micom           Check memory leak from Micom Binary.\n");
 #else
-	printf("\nUsage: mem_leak_checker\n");
+	printf("\nUsage: mem_leak\n");
 #endif
 	return ERROR;
 }
