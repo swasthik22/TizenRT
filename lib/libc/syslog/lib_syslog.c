@@ -114,6 +114,7 @@
 
 static inline int vsyslog_internal(FAR const char *fmt, va_list ap)
 {
+int tempret = ERROR;
 #if defined(CONFIG_SYSLOG)
 	struct lib_outstream_s stream;
 #elif CONFIG_NFILE_DESCRIPTORS > 0
@@ -145,8 +146,10 @@ static inline int vsyslog_internal(FAR const char *fmt, va_list ap)
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-
-	return lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
+	lib_take_semaphore(stdout);
+	tempret =  lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
+	lib_give_semaphore(stdout);
+	return tempret;
 
 #elif CONFIG_NFILE_DESCRIPTORS > 0
 	/* Wrap the stdout in a stream object and let lib_vsprintf
@@ -162,8 +165,10 @@ static inline int vsyslog_internal(FAR const char *fmt, va_list ap)
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-
-	return lib_vsprintf(&stream.public, fmt, ap);
+	lib_take_semaphore(stdout);
+	tempret = lib_vsprintf(&stream.public, fmt, ap);
+	lib_give_semaphore(stdout);
+	return tempret;
 
 #elif defined(CONFIG_ARCH_LOWPUTC)
 	/* Wrap the low-level output in a stream object and let lib_vsprintf
@@ -179,7 +184,7 @@ static inline int vsyslog_internal(FAR const char *fmt, va_list ap)
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	int tempret = ERROR;
+
 	lib_take_semaphore(stdio);
 	tempret = lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 	lib_give_semaphore(stdio);
