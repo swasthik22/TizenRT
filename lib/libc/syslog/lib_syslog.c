@@ -65,6 +65,7 @@
 #include <tinyara/logm.h>
 #endif
 #include "syslog/syslog.h"
+#include "semaphore.h"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -178,9 +179,11 @@ static inline int vsyslog_internal(FAR const char *fmt, va_list ap)
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-
-	return lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
-
+	int tempret = ERROR;
+	lib_take_semaphore(stdio);
+	tempret = lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
+	lib_give_semaphore(stdio);
+	return tempret;
 #else							/* CONFIG_SYSLOG */
 	return 0;
 #endif							/* CONFIG_SYSLOG */
