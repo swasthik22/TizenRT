@@ -146,7 +146,7 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	if(!up_interrupt_context()){
+	if(!up_interrupt_context() && getpid() != 0 ){
 	lib_take_semaphore(stdout);
 	tempret =  lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 	lib_give_semaphore(stdout);
@@ -170,7 +170,7 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	if(!up_interrupt_context()){
+	if(!up_interrupt_context() && getpid() != 0){
 	lib_take_semaphore(stdout);
 	tempret = lib_vsprintf(&stream.public, fmt, ap);
 	lib_give_semaphore(stdout);
@@ -192,7 +192,7 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	if(!up_interrupt_context()){
+	if(!up_interrupt_context() && getpid() != 0){
 	lib_take_semaphore(stdout);
 	tempret = lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 	lib_give_semaphore(stdout);
