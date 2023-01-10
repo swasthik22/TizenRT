@@ -146,10 +146,15 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
+	if(!up_interrupt_context()){
 	lib_take_semaphore(stdout);
 	tempret =  lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 	lib_give_semaphore(stdout);
 	return tempret;
+	}
+	else{
+		return lib_vsprintf((FAR struct lib_outstream_s *)&stream,fmt,ap);
+	}
 
 #elif CONFIG_NFILE_DESCRIPTORS > 0
 	/* Wrap the stdout in a stream object and let lib_vsprintf
