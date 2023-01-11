@@ -146,17 +146,17 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	//if(!up_interrupt_context() && getpid() != 0 ){
-	//lib_take_semaphore(stdout);
+	if(!up_interrupt_context() && getpid() != 0 ){
+//	lib_take_semaphore(stdout);
 	sched_lock();
 	tempret =  lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
-	//lib_give_semaphore(stdout);
+//	lib_give_semaphore(stdout);
 	sched_unlock();
 	return tempret;
-//	}
-//	else{
-//		return lib_vsprintf((FAR struct lib_outstream_s *)&stream,fmt,ap);
-//	}
+	}
+	else{
+		return lib_vsprintf((FAR struct lib_outstream_s *)&stream,fmt,ap);
+	}
 
 #elif CONFIG_NFILE_DESCRIPTORS > 0
 	/* Wrap the stdout in a stream object and let lib_vsprintf
@@ -172,16 +172,16 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-//	if(!up_interrupt_context() && getpid() != 0){
+	if(!up_interrupt_context() && getpid() != 0){
 //	lib_take_semaphore(stdout);
 	sched_lock();
 	tempret = lib_vsprintf(&stream.public, fmt, ap);
 	sched_unlock();
 	//	lib_give_semaphore(stdout);
-//	return tempret;
-//	}else{
-//	return lib_vsprintf(&stream.public,fmt,ap);
-//	}
+	return tempret;
+	}else{
+	return lib_vsprintf(&stream.public,fmt,ap);
+	}
 #elif defined(CONFIG_ARCH_LOWPUTC)
 	/* Wrap the low-level output in a stream object and let lib_vsprintf
 	 * do the work.
@@ -196,16 +196,16 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	//if(!up_interrupt_context() && getpid() != 0){
+	if(!up_interrupt_context() && getpid() != 0){
 	//lib_take_semaphore(stdout);
 	sched_lock();
 	tempret = lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 	sched_unlock();
 	//lib_give_semaphore(stdout);
-	//return tempret;
-	//}else{
-	//	return lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt,ap);
-	//}
+	return tempret;
+	}else{
+		return lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt,ap);
+	}
 #else							/* CONFIG_SYSLOG */
 	return 0;
 #endif							/* CONFIG_SYSLOG */
