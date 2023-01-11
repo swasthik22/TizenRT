@@ -91,6 +91,9 @@
  * Global Variables
  ****************************************************************************/
 
+sem_t dbg_semaphore;
+bool is_initialized = false;
+
 /****************************************************************************
  * Private Constant Data
  ****************************************************************************/
@@ -123,6 +126,11 @@ int tempret = ERROR;
 	struct lib_outstream_s stream;
 #endif
 
+	if(is_initialized == false){
+		sem_init(&dbg_semaphore,0,1);
+		is_initialized = true;
+	}
+
 #if defined(CONFIG_SYSLOG_TIMESTAMP)
 	struct timespec ts;
 	int ret;
@@ -146,12 +154,16 @@ int tempret = ERROR;
 		(void)lib_sprintf((FAR struct lib_outstream_s *)&stream, "[%6d.%06d]", ts.tv_sec, ts.tv_nsec / 1000);
 	}
 #endif
-	if(!up_interrupt_context() && getpid() != 0 ){
+	if(!up_interrupt_context() && getpid() != 0){
 //	lib_take_semaphore(stdout);
-	sched_lock();
+//	sched_lock();
+//	sem_wait(&dbg_semaphore);
+	lib_take_semaphore(stderr);
 	tempret =  lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
 //	lib_give_semaphore(stdout);
-	sched_unlock();
+//	sched_unlock();
+//	sem_post(&dbg_semaphore);
+	lib_give_semaphore(stderr);
 	return tempret;
 	}
 	else{
@@ -174,11 +186,16 @@ int tempret = ERROR;
 #endif
 	if(!up_interrupt_context() && getpid() != 0){
 //	lib_take_semaphore(stdout);
-	sched_lock();
+	//sched_lock();
+	//sem_wait(&dbg_semaphore);
+	lib_take_semaphore(stderr);
 	tempret = lib_vsprintf(&stream.public, fmt, ap);
-	sched_unlock();
+	//sched_unlock();
 	//	lib_give_semaphore(stdout);
+	//sem_post(&dbg_semaphore);
+	lib_give_semaphore(stderr);
 	return tempret;
+
 	}else{
 	return lib_vsprintf(&stream.public,fmt,ap);
 	}
@@ -198,10 +215,14 @@ int tempret = ERROR;
 #endif
 	if(!up_interrupt_context() && getpid() != 0){
 	//lib_take_semaphore(stdout);
-	sched_lock();
+	//sched_lock();
+	//sem_wait(&dbg_semaphore);
+	lib_take_semaphore(stderr);
 	tempret = lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt, ap);
-	sched_unlock();
+	//sched_unlock();
 	//lib_give_semaphore(stdout);
+	//sem_post(&dbg_semaphore);
+	lib_give_semaphore(stderrr);
 	return tempret;
 	}else{
 		return lib_vsprintf((FAR struct lib_outstream_s *)&stream, fmt,ap);
