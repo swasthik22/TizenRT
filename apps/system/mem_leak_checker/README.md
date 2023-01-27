@@ -19,7 +19,7 @@ Application Configuration -> System Libraries and Add-Ons -> [*] Memory Leakage 
 #### HASH_TABLE_SIZE
 
 The Memory Leak Checker uses hash table to improve searching performance.  
-CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE represents a number of hash table index.  
+CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE represents the  number of hash table indexes.  
 It has a good performance with big size but spends more memory.
 
 Note: We recommand using a prime number. Default value of that configuration is 1007.
@@ -30,7 +30,7 @@ This can be run on TASH.
 ```bash
 TASH>> mem_leak [target]
        [target] is used only when APP_BINARY_SEPARATION is enabled.
-       [target] is one of kernel, wifi or micom.
+       [target] is one of kernel, app1 or app2.
 
 
 Type   |    Addr   |   Size   | Owner
@@ -48,12 +48,12 @@ Here are description of result.
 There are two types, *LEAK* and *BROKEN*.  
 
 *LEAK* means that *Addr* is a memory leakage and it was allocated by *Owner* with *Size*.  
-*BROKEN* means that some memory node has a wrong value in a chunk. It means memory is corrupted and is abnormal state.
+*BROKEN* means that the given memory address has a wrong value in a chunk. It means memory is corrupted and is abnormal state.
 
 #### Addr and Owner
 
 *Addr* is an address allocated.  
-*Owner* is an address of function which requests allocation.
+*Owner* is the address of the code segment that requested the memory allocation. 
 
 You can find a function symbol and a line number using *addr2line* command with owner address.
 For FLAT_BUILD or kernel, you can use tinyara.elf file.

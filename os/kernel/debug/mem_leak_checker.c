@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Copyright 2020 Samsung Electronics All Rights Reserved.
+ * Copyright 2023 Samsung Electronics All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,7 @@
 #define MAX_ALLOC_COUNT    CONFIG_MEM_LEAK_CHECKER_MAX_ALLOC_COUNT
 #define HASH_SIZE          CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE
 
-#define RAM_START_ADDR  kregionx_start[0]
-#define RAM_END_ADDR	(kregionx_start[CONFIG_KMM_REGIONS - 1] + kregionx_size[CONFIG_KMM_REGIONS - 1])
-#define HEAP_START_ADDR leak_checker.heap_start
-#define HEAP_END_ADDR   leak_checker.heap_end
+#define MM_PREV_NODE_SIZE(x)            ((x)->preceding & ~MM_ALLOC_BIT)
 
 struct alloc_node_info_s {
 	volatile struct mm_allocnode_s *node;
@@ -60,7 +57,7 @@ static struct mem_leak_checker_info_s leak_checker;
 #ifdef CONFIG_MM_KERNEL_HEAP
 extern struct mm_heap_s g_kmmheap[CONFIG_KMM_NHEAPS];
 #endif
-extern sq_queue_t g_bin_addr_list;
+
 static void hash_init(void)
 {
 	int index;
@@ -133,7 +130,7 @@ static int get_node_cnt(void)
 				continue;
 			}
 			/* Check broken link */
-			if (node_size != (node->preceding & 0x7FFFFFFF)) {
+			if (node_size != MM_PREV_NODE_SIZE(node)) {
 				continue;
 			}
 			node_size = node->size;
@@ -175,7 +172,7 @@ static void fill_hash_table(int *leak_cnt, int *broken_cnt)
 			}
 
 			/* Check broken link */
-			if (node_size != (node->preceding & 0x7FFFFFFF)) {
+			if (node_size != MM_PREV_NODE_SIZE(node)) {
 				node->reserved = MEM_BROKEN;
 				(*broken_cnt)++;
 				continue;
@@ -257,12 +254,18 @@ extern uint32_t _sdata;
 extern uint32_t _edata;
 extern uint32_t _sbss;
 extern uint32_t _ebss;
+
+#ifdef CONFIG_ARCH_BOARD_RTL8720E
 extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
 extern uint32_t __psram_bss_start__;
 extern uint32_t __psram_bss_end__;
 extern uint32_t __psram_data_start__;
 extern uint32_t __psram_data_end__;
+#endif
 
 int checkerpid;
 
@@ -288,9 +291,15 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 	
 	search_addr(&_sdata, &_edata, leak_cnt);
 	search_addr(&_sbss, &_ebss, leak_cnt);
+
+#ifdef CONFIG_ARCH_BOARD_RTL8720E
 	search_addr(&__bss_start__, &__bss_end__, leak_cnt);
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
 	search_addr(&__psram_bss_start__, &__psram_bss_end__, leak_cnt);
 	search_addr(&__psram_data_start__, &__psram_data_end__, leak_cnt);
+#endif
 
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	if (strncmp(bin_name, "kernel", strlen("kernel")) == 0) {
@@ -319,7 +328,6 @@ static void print_info(char *bin_name, int leak_cnt, int broken_cnt, uint32_t bi
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	elf_show_all_bin_section_addr();
 #endif
-
 
 	if (leak_cnt > 0 || broken_cnt > 0) {
 		lldbg("Type   |    Addr   |   Size   |  Owner  | PID \n");
@@ -377,7 +385,6 @@ static void init_mem_leak_checker(int checker_pid, char *bin_name)
 	/* stack information is for leak checker task. */
 	leak_checker.stack_top = checker_tcb->adj_stack_ptr;
 	leak_checker.stack_bottom = leak_checker.stack_top - checker_tcb->adj_stack_size;
-	lldbg("stack top : %p stack bottom %p\n", leak_checker.stack_top, leak_checker.stack_bottom);
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	if (strncmp(bin_name, "kernel", strlen("kernel")) == 0) {
 		heap = g_kmmheap;
@@ -411,8 +418,6 @@ int run_mem_leak_checker(int checker_pid, char *bin_name)
 		lldbg("Available buffer size (%d) is small.\nPlease increase CONFIG_MEM_LEAK_CHECKER_MAX_ALLOC_COUNT value more than %d.\n", MAX_ALLOC_COUNT, node_cnt);
 		return ERROR;
 	}
-	lldbg("node count in loadable : %d\n", node_cnt);
-	
 
 	hash_init();
 	fill_hash_table(&leak_cnt, &broken_cnt);

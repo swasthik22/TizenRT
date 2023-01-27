@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Copyright 2020 Samsung Electronics All Rights Reserved.
+ * Copyright 2023 Samsung Electronics All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,9 @@ usage:
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	printf("\nUsage: mem_leak [TARGET]\n");
 	printf("\nTargets:\n");
-	printf(" kernel          Check memory leak from kernel threads.\n");
-	printf(" wifi            Check memory leak from Wi-Fi Binary.\n");
-	printf(" micom           Check memory leak from Micom Binary.\n");
+	printf(" kernel         Check memory leak from kernel threads.\n");
+	printf("app1            Check memory leak from app1 Binary.\n");
+	printf("app2            Check memory leak from app2 Binary.\n");
 #else
 	printf("\nUsage: mem_leak\n");
 #endif
