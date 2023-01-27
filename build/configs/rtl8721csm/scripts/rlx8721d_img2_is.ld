@@ -309,9 +309,11 @@ SECTIONS
 	.psram_image2.data : 
 	{
 		. = ALIGN (32);
+		__psram_data_start__ = .;
 		*(.psram.data*)
 		. = ALIGN (32);
 		*(.psram.rodata*)
+		__psram_data_end__ = .;
 	} > PSRAM_NS
   
 	.psram_image2.bss :
