@@ -19,7 +19,7 @@ Application Configuration -> System Libraries and Add-Ons -> [*] Memory Leakage 
 #### HASH_TABLE_SIZE
 
 The Memory Leak Checker uses hash table to improve searching performance.  
-CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE represents a number of hash table index.  
+CONFIG_MEM_LEAK_CHECKER_HASH_TABLE_SIZE represents the  number of hash table indexes.  
 It has a good performance with big size but spends more memory.
 
 Note: We recommand using a prime number. Default value of that configuration is 1007.
@@ -30,7 +30,7 @@ This can be run on TASH.
 ```bash
 TASH>> mem_leak [target]
        [target] is used only when APP_BINARY_SEPARATION is enabled.
-       [target] is one of kernel, wifi or micom.
+       [target] is one of kernel, app1 or app2.
 
 
 Type   |    Addr   |   Size   | Owner

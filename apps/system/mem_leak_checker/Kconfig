@@ -18,7 +18,7 @@ config MEM_LEAK_CHECKER_HASH_TABLE_SIZE
 	int "size of hash table"
 	default 1007
 	---help---
-		The size of the hash table at hash search. It is good to prime number. 
+		The size of the hash table for searching. It is preferred to have this as a prime number
 
 config MEM_LEAK_CHECKER_MAX_ALLOC_COUNT
 	int "max allocation counts"
