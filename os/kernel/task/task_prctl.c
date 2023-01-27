@@ -143,7 +143,7 @@ int prctl(int option, ...)
 			/* An invalid pid will be indicated by a NULL TCB returned from
 			 * sched_gettcb()
 			 */
-			
+
 			if (!tcb) {
 				sdbg("Pid does not correspond to a task: %d\n", pid);
 				err = ESRCH;

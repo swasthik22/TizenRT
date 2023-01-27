@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- * Copyright 2020 Samsung Electronics All Rights Reserved.
+ * Copyright 2023 Samsung Electronics All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -257,12 +257,18 @@ extern uint32_t _sdata;
 extern uint32_t _edata;
 extern uint32_t _sbss;
 extern uint32_t _ebss;
+
+#ifdef CONFIG_ARCH_BOARD_RTL8720E
 extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
 extern uint32_t __psram_bss_start__;
 extern uint32_t __psram_bss_end__;
 extern uint32_t __psram_data_start__;
 extern uint32_t __psram_data_end__;
+#endif
 
 int checkerpid;
 
@@ -288,9 +294,15 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 	
 	search_addr(&_sdata, &_edata, leak_cnt);
 	search_addr(&_sbss, &_ebss, leak_cnt);
+
+#ifdef CONFIG_ARCH_BOARD_RTL8720E
 	search_addr(&__bss_start__, &__bss_end__, leak_cnt);
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
 	search_addr(&__psram_bss_start__, &__psram_bss_end__, leak_cnt);
 	search_addr(&__psram_data_start__, &__psram_data_end__, leak_cnt);
+#endif
 
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	if (strncmp(bin_name, "kernel", strlen("kernel")) == 0) {
@@ -319,7 +331,6 @@ static void print_info(char *bin_name, int leak_cnt, int broken_cnt, uint32_t bi
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	elf_show_all_bin_section_addr();
 #endif
-
 
 	if (leak_cnt > 0 || broken_cnt > 0) {
 		lldbg("Type   |    Addr   |   Size   |  Owner  | PID \n");

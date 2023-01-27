@@ -447,10 +447,10 @@ void *elf_find_start_section_addr(struct binary_s *binp);
  * Name: get_bin_addr_list
  *
  * Description:
- *   Return the pointer to the bin info address list
+ *   Returns the pointer to the bin info address list
  *
  * Returned Value:
- *   Return the pointer to the bin info address list
+ *   Pointer to the bin info address list
  ****************************************************************************/
 bin_addr_info_t *get_bin_addr_list(void);
 
