@@ -428,6 +428,11 @@ struct bin_addr_info_s {
 	uint32_t data_addr;
 	uint32_t bss_addr;
 #endif
+#ifdef CONFIG_MEM_LEAK_CHECKER
+	uint32_t rodata_size;
+	uint32_t data_size;
+	uint32_t bss_size;
+#endif
 #endif
 };
 typedef struct bin_addr_info_s bin_addr_info_t;

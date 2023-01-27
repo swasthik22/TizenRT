@@ -842,9 +842,10 @@ void *zalloc_at(int heap_index, size_t size);
 struct mem_leak_checker_info_s {
 	void *stack_top;
 	void *stack_bottom;
-	void *heap_start;
-	void *heap_end;
+	struct mm_allocnode_s **heap_start;
+	struct mm_allocnode_s **heap_end;
 	void *heap;
+	int regions;
 };
 int run_mem_leak_checker(int checker_pid, char *bin_name);
 #endif
