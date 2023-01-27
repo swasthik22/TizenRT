@@ -233,7 +233,11 @@ void elf_save_bin_section_addr(struct binary_s *bin)
 		g_bin_addr_list[bin_idx].rodata_addr = bin->sections[BIN_RO];
 		g_bin_addr_list[bin_idx].data_addr = bin->sections[BIN_DATA];
 		g_bin_addr_list[bin_idx].bss_addr = bin->sections[BIN_BSS];
-
+#ifdef CONFIG_MEM_LEAK_CHECKER
+		g_bin_addr_list[bin_idx].rodata_size = bin->sizes[BIN_RO];
+		g_bin_addr_list[bin_idx].data_size = bin->sizes[BIN_DATA];
+		g_bin_addr_list[bin_idx].bss_size = bin->sizes[BIN_BSS];
+#endif
 		binfo("   rodata_addr : %x\n", g_bin_addr_list[bin_idx].rodata_addr);
 		binfo("   data_addr   : %x\n", g_bin_addr_list[bin_idx].data_addr);
 		binfo("   bss_addr    : %x\n", g_bin_addr_list[bin_idx].bss_addr);
