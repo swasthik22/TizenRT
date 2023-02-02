@@ -88,6 +88,11 @@ OBJS = $(AOBJS) $(COBJS)
 
 BIN = libkernel$(LIBEXT)
 
+memory_regionaddr:
+	$(Q) $(TOPDIR)/tools/memory_regionaddr.sh
+
+depend: memory_regionaddr
+
 all: $(BIN)
 .PHONY: context depend clean distclean
 
