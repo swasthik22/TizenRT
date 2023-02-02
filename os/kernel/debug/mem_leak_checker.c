@@ -31,6 +31,7 @@
 #include <binary_manager/binary_manager.h>
 
 #include "../binfmt/libelf/libelf.h"
+#include "memory_regioninfo.c"
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -250,23 +251,6 @@ static void heap_check(int *leak_cnt)
 	}
 }
 
-extern uint32_t _sdata;
-extern uint32_t _edata;
-extern uint32_t _sbss;
-extern uint32_t _ebss;
-
-#ifdef CONFIG_ARCH_BOARD_RTL8720E
-extern uint32_t __bss_start__;
-extern uint32_t __bss_end__;
-#endif
-
-#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
-extern uint32_t __psram_bss_start__;
-extern uint32_t __psram_bss_end__;
-extern uint32_t __psram_data_start__;
-extern uint32_t __psram_data_end__;
-#endif
-
 int checkerpid;
 
 static void init_mem_leak_checker(int checker_pid, char *bin_name);
@@ -288,18 +272,11 @@ static void ram_check(char *bin_name, int *leak_cnt, uint32_t *bin_text_addr)
 #endif
 	/* Visit all the data regions
 	 */
-	
-	search_addr(&_sdata, &_edata, leak_cnt);
-	search_addr(&_sbss, &_ebss, leak_cnt);
-
-#ifdef CONFIG_ARCH_BOARD_RTL8720E
-	search_addr(&__bss_start__, &__bss_end__, leak_cnt);
-#endif
-
-#ifdef CONFIG_ARCH_BOARD_RTL8721CSM
-	search_addr(&__psram_bss_start__, &__psram_bss_end__, leak_cnt);
-	search_addr(&__psram_data_start__, &__psram_data_end__, leak_cnt);
-#endif
+	for(int i=0;i<4;i++){
+		if(start_address[i] != (void *)0){	
+			search_addr(start_address[i],end_address[i], leak_cnt);
+		}
+	}
 
 #ifdef CONFIG_APP_BINARY_SEPARATION
 	if (strncmp(bin_name, "kernel", strlen("kernel")) == 0) {

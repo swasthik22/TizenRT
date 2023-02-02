@@ -126,12 +126,14 @@ install:
 
 endif
 
+#memory_regioninfo: $(Q) $(TOPDIR)/tools/mk_memory_regioninfo.sh
+
 ifeq ($(CONFIG_BUILTIN_APPS)$(CONFIG_MEM_LEAK_CHECKER),yy)
 $(BUILTIN_REGISTRY)$(DELIM)$(FUNCNAME).bdat: $(DEPCONFIG) Makefile
 	$(Q) $(call REGISTER,$(APPNAME),$(FUNCNAME),$(THREADEXEC),$(PRIORITY),$(STACKSIZE))
 
-context: $(BUILTIN_REGISTRY)$(DELIM)$(FUNCNAME).bdat
-
+context: $(BUILTIN_REGISTRY)$(DELIM)$(FUNCNAME).bdat 
+	$(Q) $(TOPDIR)/tools/mk_memory_regioninfo.sh
 else
 context:
 

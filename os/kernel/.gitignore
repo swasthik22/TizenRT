@@ -8,3 +8,4 @@
 /*.adb
 /*.lib
 /*.src
+/debug/memory_regioninfo.c

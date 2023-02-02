@@ -22,6 +22,7 @@ endif
 
 ifeq ($(CONFIG_MEM_LEAK_CHECKER),y)
 CSRCS += mem_leak_checker.c
+CSRCS += memory_regioninfo.c
 endif
 
 CSRCS += dbg_termination_info.c
