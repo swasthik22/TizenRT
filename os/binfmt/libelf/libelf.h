@@ -428,6 +428,11 @@ struct bin_addr_info_s {
 	uint32_t data_addr;
 	uint32_t bss_addr;
 #endif
+#ifdef CONFIG_MEM_LEAK_CHECKER
+	uint32_t rodata_size;
+	uint32_t data_size;
+	uint32_t bss_size;
+#endif
 #endif
 };
 typedef struct bin_addr_info_s bin_addr_info_t;
@@ -437,6 +442,18 @@ void elf_delete_bin_section_addr(uint8_t bin_idx);
 #ifdef CONFIG_BINFMT_SECTION_UNIFIED_MEMORY
 void *elf_find_start_section_addr(struct binary_s *binp);
 #endif
+
+/****************************************************************************
+ * Name: get_bin_addr_list
+ *
+ * Description:
+ *   Returns the pointer to the bin info address list
+ *
+ * Returned Value:
+ *   Pointer to the bin info address list
+ ****************************************************************************/
+bin_addr_info_t *get_bin_addr_list(void);
+
 #endif /* CONFIG_APP_BINARY_SEPARATION */
 
 #endif							/* __BINFMT_LIBELF_LIBELF_H */
